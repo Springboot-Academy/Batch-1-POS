@@ -1,23 +1,21 @@
-package com.springbootacademy.pointofsale.dto;
+package com.springbootacademy.pointofsale.dto.response;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CustomerDTO {
+public class ResponseOrderDetailsDTO {
+//    customer
     private String customerName;
     private String customerAddress;
-    private double customerSalary;
     private ArrayList contactNumbers;
-    private String nic;
-    private boolean activeState;
-
-
-    public CustomerDTO(String customerName) {
-        this.customerName = customerName;
-    }
-
+//    order
+    private Date date;
+    private Double total;
 }

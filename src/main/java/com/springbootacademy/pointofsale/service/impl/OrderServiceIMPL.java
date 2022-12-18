@@ -1,7 +1,10 @@
 package com.springbootacademy.pointofsale.service.impl;
 
 import com.springbootacademy.pointofsale.dto.CustomerDTO;
+import com.springbootacademy.pointofsale.dto.QueryInterface.OrderDetailInterface;
+import com.springbootacademy.pointofsale.dto.paginated.PaginatedResponseOrderDetails;
 import com.springbootacademy.pointofsale.dto.request.RequestOrderSaveDTO;
+import com.springbootacademy.pointofsale.dto.response.ResponseOrderDetailsDTO;
 import com.springbootacademy.pointofsale.entity.Order;
 import com.springbootacademy.pointofsale.entity.OrderDetails;
 import com.springbootacademy.pointofsale.repository.CustomerRepo;
@@ -13,10 +16,12 @@ import com.springbootacademy.pointofsale.util.mappers.ItemMapper;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -64,5 +69,31 @@ public class OrderServiceIMPL implements OrderService {
         }
        return null;
 
+    }
+
+    @Override
+    public PaginatedResponseOrderDetails getAllOrderDetails(boolean status, int page, int size) {
+        List<OrderDetailInterface> orderDetailInterfaces = orderRepo.getAllOrderDetails(status, PageRequest.of(page, size));
+        System.out.println(orderDetailInterfaces.get(0).getCustomerName());
+
+        List<ResponseOrderDetailsDTO> list = new ArrayList<>();
+        for(OrderDetailInterface o : orderDetailInterfaces){
+//            ResponseOrderDetailsDTO responseOrderDetailsDTO = new ResponseOrderDetailsDTO(
+//                  o.getCustomerName(),o.getCustomerAddress(),o.getContactNumbers(),o.getDate(),o.getTotal()
+//            );
+//            list.add(responseOrderDetailsDTO);
+
+            list.add(
+                    new ResponseOrderDetailsDTO(
+                            o.getCustomerName(),o.getCustomerAddress(),o.getContactNumbers(),o.getDate(),o.getTotal()
+                    )
+            );
+        }
+
+        PaginatedResponseOrderDetails paginatedResponseOrderDetails = new PaginatedResponseOrderDetails(
+                list,
+                orderRepo.countAllOrderDetails(status)
+        );
+        return paginatedResponseOrderDetails;
     }
 }
